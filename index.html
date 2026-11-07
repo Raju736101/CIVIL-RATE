@@ -1,1 +1,337 @@
 
+<!DOCTYPE html>  <html lang="en">  
+<head>  
+  <meta charset="UTF-8">  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+  <title>CIVIL RATE FINDER — Demo</title>  
+  <style>  
+    :root {  
+      --navy: #142b4a;  
+      --blue: #1769aa;  
+      --bg: #f3f6fa;  
+      --line: #dce4ed;  
+      --text: #1d2939;  
+      --muted: #667085;  
+      --green: #117a52;  
+    }  
+    * { box-sizing: border-box; }  
+    body {  
+      margin: 0;  
+      background: var(--bg);  
+      color: var(--text);  
+      font-family: Arial, sans-serif;  
+    }  
+    header {  
+      background: var(--navy);  
+      color: white;  
+      padding: 18px max(20px, calc((100% - 1100px) / 2));  
+      display: flex;  
+      justify-content: space-between;  
+      align-items: center;  
+      gap: 12px;  
+    }  
+    header strong { font-size: 19px; letter-spacing: .3px; }  
+    header span { color: #cbd7e5; font-size: 13px; }  
+    main { max-width: 1100px; margin: 28px auto; padding: 0 18px; }  
+    .intro { margin-bottom: 20px; }  
+    h1 { margin: 0 0 8px; font-size: 27px; }  
+    h2 { font-size: 18px; margin: 0 0 16px; }  
+    p { color: var(--muted); line-height: 1.5; }  
+    .grid {  
+      display: grid;  
+      grid-template-columns: repeat(2, minmax(0, 1fr));  
+      gap: 18px;  
+    }  
+    .card {  
+      background: white;  
+      border: 1px solid var(--line);  
+      border-radius: 12px;  
+      padding: 20px;  
+      box-shadow: 0 3px 12px #152b4a0a;  
+    }  
+    label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 6px; }  
+    input, select {  
+      width: 100%;  
+      padding: 11px;  
+      border: 1px solid #cbd5e1;  
+      border-radius: 7px;  
+      font-size: 15px;  
+      background: white;  
+    }  
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }  
+    button {  
+      border: 0;  
+      border-radius: 7px;  
+      padding: 11px 15px;  
+      font-size: 14px;  
+      font-weight: 700;  
+      cursor: pointer;  
+    }  
+    .primary { background: var(--blue); color: white; margin-top: 16px; }  
+    .secondary { background: white; color: var(--navy); border: 1px solid #cbd5e1; }  
+    .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }  
+    .metric { background: #f5f8fc; padding: 14px; border-radius: 8px; }  
+    .metric small { display: block; color: var(--muted); margin-bottom: 7px; }  
+    .metric strong { font-size: 19px; }  
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }  
+    th, td { padding: 11px 8px; border-bottom: 1px solid var(--line); text-align: left; font-size: 14px; }  
+    th { color: var(--muted); font-size: 12px; }  
+    td:last-child, th:last-child { text-align: right; }  
+    .total { display: flex; justify-content: space-between; margin-top: 16px; font-size: 18px; font-weight: 700; }  
+    .note { font-size: 12px; }  
+    .status { color: var(--green); font-weight: 700; }  
+    .actions { display: flex; gap: 8px; align-items: center; }  
+    footer { max-width: 1100px; margin: 0 auto 24px; padding: 0 18px; }  
+    @media (max-width: 720px) {  
+      .grid { grid-template-columns: 1fr; }  
+      .metrics { grid-template-columns: 1fr; }  
+      header { align-items: flex-start; flex-direction: column; }  
+    }  
+    @media print {  
+      header, .inputs, .actions, footer { display: none !important; }  
+      body { background: white; }  
+      main { margin: 0 auto; }  
+      .card { box-shadow: none; }  
+    }  
+  </style>  
+</head>  
+<body>  
+  <header>  
+    <strong>CIVIL RATE FINDER</strong>  
+    <div class="actions">  
+      <span id="tagline">Construction planning demo · India</span>  
+      <button class="secondary" id="languageButton" type="button">हिन्दी</button>  
+    </div>  
+  </header>    <main>  
+    <section class="intro">  
+      <h1 id="pageTitle">Flooring quantity & cost demo</h1>  
+      <p id="pageDescription">Enter room dimensions and your quoted rates. This demo calculates an indicative tile quantity and BOQ.</p>  
+    </section>  <div class="grid">  
+  <section class="card inputs">  
+    <h2 id="inputHeading">Project inputs</h2>  
+    <div class="fields">  
+      <div>  
+        <label id="lengthLabel" for="length">Room length (ft)</label>  
+        <input id="length" type="number" min="0" step="0.1" value="12">  
+      </div>  
+      <div>  
+        <label id="widthLabel" for="width">Room width (ft)</label>  
+        <input id="width" type="number" min="0" step="0.1" value="10">  
+      </div>  
+      <div>  
+        <label id="tileLabel" for="tileSize">Tile size</label>  
+        <select id="tileSize">  
+          <option value="0.36">600 × 600 mm</option>  
+          <option value="0.09">300 × 300 mm</option>  
+          <option value="0.72">600 × 1200 mm</option>  
+        </select>  
+      </div>  
+      <div>  
+        <label id="wasteLabel" for="waste">Wastage (%)</label>  
+        <input id="waste" type="number" min="0" max="50" step="1" value="5">  
+      </div>  
+      <div>  
+        <label id="tileRateLabel" for="tileRate">Tile rate (₹/m²)</label>  
+        <input id="tileRate" type="number" min="0" step="1" value="0">  
+      </div>  
+      <div>  
+        <label id="labourRateLabel" for="labourRate">Labour rate (₹/m²)</label>  
+        <input id="labourRate" type="number" min="0" step="1" value="0">  
+      </div>  
+      <div>  
+        <label id="adhesiveRateLabel" for="adhesiveRate">Adhesive & grout (₹/m²)</label>  
+        <input id="adhesiveRate" type="number" min="0" step="1" value="0">  
+      </div>  
+    </div>  
+    <button class="primary" id="calculateButton" type="button">Update estimate</button>  
+    <p class="note" id="rateNote">Enter supplier quotes to calculate costs. No live market prices are provided in this demo.</p>  
+  </section>  
+
+  <section class="card">  
+    <h2 id="resultHeading">Quantity summary</h2>  
+    <div class="metrics">  
+      <div class="metric"><small id="areaCaption">Floor area</small><strong id="areaResult">—</strong></div>  
+      <div class="metric"><small id="tileCaption">Tiles to order</small><strong id="tileResult">—</strong></div>  
+      <div class="metric"><small id="statusCaption">Rate status</small><strong class="status" id="rateStatus">—</strong></div>  
+    </div>  
+    <p class="note" id="formulaNote"></p>  
+  </section>  
+
+  <section class="card" style="grid-column: 1 / -1">  
+    <h2 id="boqHeading">Sample BOQ</h2>  
+    <table>  
+      <thead>  
+        <tr>  
+          <th id="itemHeader">Item</th>  
+          <th id="quantityHeader">Quantity</th>  
+          <th id="rateHeader">Rate</th>  
+          <th id="amountHeader">Amount</th>  
+        </tr>  
+      </thead>  
+      <tbody id="boqBody"></tbody>  
+    </table>  
+    <div class="total">  
+      <span id="totalLabel">Estimated total</span>  
+      <span id="grandTotal">₹0</span>  
+    </div>  
+    <p class="note" id="disclaimer">Indicative demo only. Actual quantities depend on site measurements, layout, tile cuts, substrate and project specifications. Confirm with a qualified site professional.</p>  
+    <button class="secondary" id="printButton" type="button">Print / Save as PDF</button>  
+  </section>  
+</div>
+
+  </main>    <footer>  
+    <p class="note" id="footerNote">Demo scope: flooring estimate only. Structural design, live supplier rates, login, database and Excel export are not included.</p>  
+  </footer>    <script>  
+    const $ = (id) => document.getElementById(id);  
+    let language = "en";  
+  
+    const text = {  
+      en: {  
+        tagline: "Construction planning demo · India",  
+        title: "Flooring quantity & cost demo",  
+        description: "Enter room dimensions and your quoted rates. This demo calculates an indicative tile quantity and BOQ.",  
+        inputHeading: "Project inputs",  
+        lengthLabel: "Room length (ft)",  
+        widthLabel: "Room width (ft)",  
+        tileLabel: "Tile size",  
+        wasteLabel: "Wastage (%)",  
+        tileRateLabel: "Tile rate (₹/m²)",  
+        labourRateLabel: "Labour rate (₹/m²)",  
+        adhesiveRateLabel: "Adhesive & grout (₹/m²)",  
+        calculate: "Update estimate",  
+        rateNote: "Enter supplier quotes to calculate costs. No live market prices are provided in this demo.",  
+        resultHeading: "Quantity summary",  
+        areaCaption: "Floor area",  
+        tileCaption: "Tiles to order",  
+        statusCaption: "Rate status",  
+        rateStatus: "Enter your rates",  
+        formula: "Method: area = length × width × 0.092903 m²/ft². Tile count includes the selected wastage and is rounded up.",  
+        boqHeading: "Sample BOQ",  
+        itemHeader: "Item",  
+        quantityHeader: "Quantity",  
+        rateHeader: "Rate",  
+        amountHeader: "Amount",  
+        totalLabel: "Estimated total",  
+        disclaimer: "Indicative demo only. Actual quantities depend on site measurements, layout, tile cuts, substrate and project specifications. Confirm with a qualified site professional.",  
+        print: "Print / Save as PDF",  
+        footer: "Demo scope: flooring estimate only. Structural design, live supplier rates, login, database and Excel export are not included.",  
+        tiles: "Floor tiles",  
+        adhesive: "Tile adhesive & grout",  
+        labour: "Tile laying labour",  
+        rateNotSet: "Not entered",  
+        rateEntered: "User-entered rates",  
+        languageButton: "हिन्दी"  
+      },  
+      hi: {  
+        tagline: "निर्माण योजना डेमो · भारत",  
+        title: "फ्लोरिंग मात्रा और लागत डेमो",  
+        description: "कमरे का माप और आपके मिले हुए रेट दर्ज करें। यह डेमो अनुमानित टाइल मात्रा और BOQ निकालता है।",  
+        inputHeading: "प्रोजेक्ट विवरण",  
+        lengthLabel: "कमरे की लंबाई (फीट)",  
+        widthLabel: "कमरे की चौड़ाई (फीट)",  
+        tileLabel: "टाइल का आकार",  
+        wasteLabel: "वेस्टेज (%)",  
+        tileRateLabel: "टाइल रेट (₹/m²)",  
+        labourRateLabel: "लेबर रेट (₹/m²)",  
+        adhesiveRateLabel: "एडहेसिव और ग्राउट (₹/m²)",  
+        calculate: "अनुमान अपडेट करें",  
+        rateNote: "लागत निकालने के लिए सप्लायर के रेट भरें। इस डेमो में लाइव बाजार भाव नहीं दिए जाते।",  
+        resultHeading: "मात्रा का सारांश",  
+        areaCaption: "फर्श का क्षेत्रफल",  
+        tileCaption: "ऑर्डर करने की टाइलें",  
+        statusCaption: "रेट की स्थिति",  
+        rateStatus: "अपने रेट भरें",  
+        formula: "तरीका: क्षेत्रफल = लंबाई × चौड़ाई × 0.092903 m²/ft²। चुना हुआ वेस्टेज जोड़कर टाइल संख्या ऊपर की पूर्ण संख्या में की जाती है।",  
+        boqHeading: "नमूना BOQ",  
+        itemHeader: "काम",  
+        quantityHeader: "मात्रा",  
+        rateHeader: "रेट",  
+        amountHeader: "राशि",  
+        totalLabel: "अनुमानित कुल",  
+        disclaimer: "यह केवल अनुमान का डेमो है। वास्तविक मात्रा साइट माप, लेआउट, टाइल कटिंग, सतह और विनिर्देशों पर निर्भर करेगी। योग्य साइट विशेषज्ञ से पुष्टि करें।",  
+        print: "प्रिंट / PDF सेव करें",  
+        footer: "डेमो में केवल फ्लोरिंग अनुमान है। स्ट्रक्चरल डिजाइन, लाइव सप्लायर रेट, लॉगिन, डेटाबेस और Excel export शामिल नहीं हैं।",  
+        tiles: "फर्श की टाइलें",  
+        adhesive: "टाइल एडहेसिव और ग्राउट",  
+        labour: "टाइल लगाने की लेबर",  
+        rateNotSet: "दर्ज नहीं",  
+        rateEntered: "यूज़र द्वारा दर्ज रेट",  
+        languageButton: "English"  
+      }  
+    };  
+  
+    function money(value) {  
+      return new Intl.NumberFormat("en-IN", {  
+        style: "currency",  
+        currency: "INR",  
+        maximumFractionDigits: 0  
+      }).format(value);  
+    }  
+  
+    function calculate() {  
+      const length = Number($("length").value);  
+      const width = Number($("width").value);  
+      const waste = Number($("waste").value);  
+      const tileArea = Number($("tileSize").value);  
+  
+      if (!(length > 0 && width > 0 && tileArea > 0) || waste < 0 || waste > 50) {  
+        alert(language === "hi"  
+          ? "कृपया सही लंबाई, चौड़ाई और 0–50% वेस्टेज दर्ज करें।"  
+          : "Enter valid length, width and wastage between 0–50%.");  
+        return;  
+      }  
+  
+      const area = length * width * 0.092903;  
+      const orderArea = area * (1 + waste / 100);  
+      const tileCount = Math.ceil(orderArea / tileArea);  
+  
+      const tileRate = Math.max(0, Number($("tileRate").value) || 0);  
+      const labourRate = Math.max(0, Number($("labourRate").value) || 0);  
+      const adhesiveRate = Math.max(0, Number($("adhesiveRate").value) || 0);  
+  
+      const rows = [  
+        { name: text[language].tiles, qty: `${tileCount} tiles`, rate: "—", amount: 0 },  
+        { name: text[language].adhesive, qty: `${orderArea.toFixed(2)} m²`, rate: money(adhesiveRate) + "/m²", amount: orderArea * adhesiveRate },  
+        { name: text[language].labour, qty: `${area.toFixed(2)} m²`, rate: money(labourRate) + "/m²", amount: area * labourRate }  
+      ];  
+  
+      const tileCost = tileRate * orderArea;  
+      rows[0].rate = money(tileRate) + "/m²";  
+      rows[0].amount = tileCost;  
+  
+      $("areaResult").textContent = `${area.toFixed(2)} m²`;  
+      $("tileResult").textContent = `${tileCount}`;  
+      $("rateStatus").textContent = tileRate + labourRate + adhesiveRate > 0  
+        ? text[language].rateEntered  
+        : text[language].rateNotSet;  
+  
+      $("boqBody").innerHTML = rows.map(row => `  
+        <tr>  
+          <td>${row.name}</td>  
+          <td>${row.qty}</td>  
+          <td>${row.rate}</td>  
+          <td>${money(row.amount)}</td>  
+        </tr>  
+      `).join("");  
+  
+      const total = rows.reduce((sum, row) => sum + row.amount, 0);  
+      $("grandTotal").textContent = money(total);  
+      $("formulaNote").textContent = text[language].formula;  
+    }  
+  
+    function setLanguage(nextLanguage) {  
+      language = nextLanguage;  
+      const t = text[language];  
+      document.documentElement.lang = language === "hi" ? "hi" : "en";  
+      $("tagline").textContent = t.tagline;  
+      $("pageTitle").textContent = t.title;  
+      $("pageDescription").textContent = t.description;  
+      $("inputHeading").textContent = t.inputHeading;  
+      $("lengthLabel").textContent = t.lengthLabel;  
+      $("widthLabel").textContent = t.widthLabel;  
+      $("tileLabel").textContent = t.tileLabel;  
+      $("wasteLabel").textContent = t.wasteLabel;  
+      $("tileRateLabel").textContent = t.tileRateLabel;  
+      $("labourRateLabel").textContent  
+  
+*(This answer reached its length limit. Send “continue” to get the rest.)*
